@@ -1,12 +1,17 @@
 import streamlit as st
+from streamlit_lottie import st_lottie
+import requests
 import re
+
+lion = requests.get('https://lottie.host/1cb7141e-90c2-424f-ada9-afa5441e602e/zikRRfxK2P.json').json()
 
 EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
 
 st.set_page_config(page_icon=':santa:', page_title="Oma's Adventskalender")
-col1,col2 = st.columns([5,1])
+col1,col2 = st.columns([7,1])
 col1.title('Benachrichtigungsabo für Lions-Club-Adventsgewinnkalender :christmas_tree:')
-col2.image('./icons8-lion-96.png')
+with col2:
+    st_lottie(lion, height=128)
 
 with st.form('subscription'):
     email = st.text_input(':email: E-Mail-Adresse `max.mustermann@mail.de`', key='email')
