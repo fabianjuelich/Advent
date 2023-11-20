@@ -1,0 +1,2 @@
+jsonrpc==3.0.1
+Werkzeug==3.0.1

@@ -10,7 +10,7 @@ with open(os.path.join(os.path.dirname(__file__), '../data/subscriptions.csv')) 
 next(subscriptions)
 
 # iterate over subscriptions
-for email, number, _ in subscriptions:
+for email, number in subscriptions:
 
     # send email
     notify(email, number, scrape(number))

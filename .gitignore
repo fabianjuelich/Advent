@@ -1,6 +1,5 @@
-## data ##
+## credentials ##
 backend/data/credentials.py
-backend/data/subscriptions.csv
 
 ## cpp ##
 

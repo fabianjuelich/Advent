@@ -1,0 +1,11 @@
+services:
+  alpine:
+    build: .
+    container_name: advent
+    ports:
+      - "4000:4000"
+    stdin_open: true  #for dev
+    tty: true #for dev
+    volumes:
+      - ./data/subscriptions.csv:/home/data/subscriptions.csv
+    restart: unless-stopped
