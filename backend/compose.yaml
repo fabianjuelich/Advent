@@ -3,7 +3,7 @@ services:
     build: .
     container_name: advent
     ports:
-      - "4000:4000"
+      - "2412:2412"
     stdin_open: true  #for dev
     tty: true #for dev
     volumes:
