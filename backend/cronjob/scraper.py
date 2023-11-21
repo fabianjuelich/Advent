@@ -1,2 +1,2 @@
 def scrape(number: int):
-    return None
+    return False

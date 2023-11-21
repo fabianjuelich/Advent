@@ -1,13 +1,13 @@
 import os, xmlrpc.server, csv
 
 class Server:
-    def subscribe(self, email, number):
+    def subscribe(self, email, number, onlyOnWin):
         # append to mailing list
         with open(os.path.join(os.path.dirname(__file__), '../data/subscriptions.csv'), 'a') as subs:
             writer = csv.writer(subs)
-            writer.writerow((email, number))
+            writer.writerow((email, number, int(onlyOnWin)))
         # feedback
-        return f'{email} subscribed to {number}'
+        return f'{email} subscribed to {number} ({onlyOnWin})'
 
 def serve():
     server = xmlrpc.server.SimpleXMLRPCServer(("0.0.0.0", 2412))
