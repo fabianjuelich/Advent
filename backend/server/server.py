@@ -9,6 +9,10 @@ class Server:
         # feedback
         return f'{email} subscribed to {number}'
 
-server = xmlrpc.server.SimpleXMLRPCServer(("0.0.0.0", 2412))
-server.register_instance(Server())
-server.serve_forever()
+def serve():
+    server = xmlrpc.server.SimpleXMLRPCServer(("0.0.0.0", 2412))
+    server.register_instance(Server())
+    server.serve_forever()
+
+if __name__ == "__main__":
+    serve()
