@@ -33,7 +33,7 @@ if submit:
 
     if valid_email and valid_number:
         # send data to server (ToDo: Catch exceptions)
-        server = xmlrpc.client.ServerProxy('http://<static_hostname>:2412')
+        server = xmlrpc.client.ServerProxy('http://fritzchen.ddnsking.com:2412')
         server.subscribe(valid_email, valid_number, onlyOnWin)
         # positive feedback
         st.markdown(f'__:green[Erfolgreich]__ :white_check_mark:\n\n{valid_email} erhält nun Benachrichtigungen für die Gewinnnummer __{valid_number}__ :bell:')
