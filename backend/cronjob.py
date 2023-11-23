@@ -1,6 +1,6 @@
 import os, csv
-from backend.cronjob.scraper import scrape
-from backend.cronjob.mail import notify
+from scraper import scrape
+from mail import notify
 
 # read mailing list
 def read():
