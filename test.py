@@ -24,4 +24,4 @@ class Test(unittest.TestCase):
     @classmethod
     def tearDownClass(self):
         with open(os.path.join(os.path.dirname(__file__), 'backend/data/subscriptions.csv'), 'w') as subs:
-            subs.write('email,number,onlyOnWin\n')
+            subs.write('email,number,daily\n')

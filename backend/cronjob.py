@@ -12,10 +12,10 @@ def read():
 def iterate(subscriptions):
     # skip header
     next(subscriptions)
-    for email, number, onlyOnWin in subscriptions:
+    for email, number, daily in subscriptions:
         # get status
         result = scraper.scrape(number)
-        if result or not int(onlyOnWin):
+        if result or not int(daily):
             # send email
             mail.notify(email, number, result)
 
