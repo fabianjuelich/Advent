@@ -1,0 +1,20 @@
+services:
+  backend:
+    container_name: advent-backend
+    build: ./backend
+    ports:
+      - "2413:2413"
+    # stdin_open: true  # for dev
+    # tty: true # for dev
+    volumes:
+      - ./backend/data/subscriptions.csv:/home/data/subscriptions.csv
+    restart: unless-stopped
+
+  frontend:
+    container_name: advent-frontend
+    build: ./frontend
+    ports:
+      - "2412:2412"
+    depends_on:
+      - backend
+    restart: unless-stopped

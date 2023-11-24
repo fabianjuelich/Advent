@@ -1,6 +1,5 @@
 import unittest, threading, xmlrpc.client, os
-from backend.server import server
-from backend.cronjob import main
+from backend import server, cronjob
 from backend.data import credentials
 
 class Test(unittest.TestCase):
@@ -8,13 +7,11 @@ class Test(unittest.TestCase):
     # backend
     @classmethod
     def setupClass(self):
-        # self.ser = threading.Thread(target=server.serve)
-        # self.ser.start()
-        pass    # start manually
+        pass    # started with docker
 
     # frontend
     def test_1_web_service(self):
-        ser = xmlrpc.client.ServerProxy('http://localhost:2412')
+        ser = xmlrpc.client.ServerProxy('http://localhost:2413')
         subscribers = ((credentials.email_user, 1, False),  # False: mail -> lose   True: mail -> win
                        (credentials.email_user, 2, True))   # False: no mail        True: mail -> win
         for subscriber in subscribers:
@@ -22,7 +19,7 @@ class Test(unittest.TestCase):
 
     # backend
     def test_2_cronjob(self):
-        main.main()
+        cronjob.main()
 
     @classmethod
     def tearDownClass(self):

@@ -1,6 +1,6 @@
 import os, xmlrpc.server, csv
 
-subs_csv = os.path.join(os.path.dirname(__file__), '../data/subscriptions.csv')
+subs_csv = os.path.join(os.path.dirname(__file__), './data/subscriptions.csv')
 
 def createCsv():
     if not os.path.isfile(subs_csv):
@@ -18,10 +18,13 @@ class Server:
         return f'{email} subscribed to {number} ({onlyOnWin})'
 
 def serve():
-    server = xmlrpc.server.SimpleXMLRPCServer(("0.0.0.0", 2412))
+    server = xmlrpc.server.SimpleXMLRPCServer(("0.0.0.0", 2413))
     server.register_instance(Server())
     server.serve_forever()
 
-if __name__ == "__main__":
+def main():
     createCsv()
     serve()
+
+if __name__ == "__main__":
+    main()

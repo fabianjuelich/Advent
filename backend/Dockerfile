@@ -12,3 +12,7 @@ COPY    ./mail          /home/mail
 COPY    ./scraper       /home/scraper
 COPY    ./server.py     /home/server.py
 COPY    ./cronjob.py    /home/cronjob.py
+
+#add healthcheck for server
+#RUN    ToDo: register cronjob
+ENTRYPOINT ["python3", "/home/server.py"]

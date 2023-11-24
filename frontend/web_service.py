@@ -1,5 +1,5 @@
 import streamlit as st
-from streamlit_lottie import st_lottie
+# from streamlit_lottie import st_lottie
 import requests, re, xmlrpc.client
 
 #lion = requests.get('https://lottie.host/1cb7141e-90c2-424f-ada9-afa5441e602e/zikRRfxK2P.json').json()
@@ -33,7 +33,7 @@ if submit:
 
     if valid_email and valid_number:
         # send data to server (ToDo: Catch exceptions)
-        server = xmlrpc.client.ServerProxy('http://fritzchen.ddnsking.com:2412')
+        server = xmlrpc.client.ServerProxy('http://advent-backend:2413')
         server.subscribe(valid_email, valid_number, onlyOnWin)
         # positive feedback
         st.markdown(f'__:green[Erfolgreich]__ :white_check_mark:\n\n{valid_email} erhält nun Benachrichtigungen für die Gewinnnummer __{valid_number}__ :bell:')

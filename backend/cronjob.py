@@ -1,10 +1,10 @@
 import os, csv
-from scraper import scrape
-from mail import notify
+from backend.scraper import scraper
+from backend.mail import mail
 
 # read mailing list
 def read():
-    with open(os.path.join(os.path.dirname(__file__), '../data/subscriptions.csv'), 'r') as subs:
+    with open(os.path.join(os.path.dirname(__file__), './data/subscriptions.csv'), 'r') as subs:
         subscriptions = csv.reader(subs.readlines(), delimiter=',')
     return subscriptions
 
@@ -12,13 +12,12 @@ def read():
 def iterate(subscriptions):
     # skip header
     next(subscriptions)
-    print('iterate')
     for email, number, onlyOnWin in subscriptions:
         # get status
-        result = scrape(number)
+        result = scraper.scrape(number)
         if result or not int(onlyOnWin):
             # send email
-            notify(email, number, result)
+            mail.notify(email, number, result)
 
 def main():
     iterate(read())
