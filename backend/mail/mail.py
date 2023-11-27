@@ -1,4 +1,4 @@
-import sys, os, ssl, smtplib, datetime
+import sys, os, smtplib, datetime
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.utils import formataddr
@@ -37,10 +37,9 @@ class Mail():
         self.msg.attach(MIMEText(html, 'html'))
 
     def send(self):
-        # default settings
-        context = ssl.create_default_context()
         # encrypted communication
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
+        with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
+            smtp.starttls()
             smtp.login(credentials.email_user, credentials.email_password)
             smtp.sendmail(credentials.email_user, self.toAddr[1], self.msg.as_string())
 
