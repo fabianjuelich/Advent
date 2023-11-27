@@ -7,7 +7,7 @@ services:
     # stdin_open: true  # for dev
     # tty: true # for dev
     volumes:
-      - ./backend/data/subscriptions.csv:/home/data/subscriptions.csv
+      - ./backend/data/subscriptions.csv:/app/data/subscriptions.csv
     restart: unless-stopped
 
   frontend:
