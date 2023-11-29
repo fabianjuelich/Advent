@@ -1,24 +1,28 @@
-import os, xmlrpc.server, csv
+import xmlrpc.server
 from mail import mail
+from db import db
 
-subs_csv = os.path.join(os.path.dirname(__file__), './data/subscriptions.csv')
-
-def createCsv():
-    if not os.path.isfile(subs_csv):
-        with open(subs_csv, 'w+') as subs:
-            writer = csv.writer(subs)
-            writer.writerow(('email', 'number', 'daily'))
+def initialize():
+    db.cur.execute('''CREATE TABLE IF NOT EXISTS subscribers (
+            email TEXT NOT NULL,
+            number INTEGER NOT NULL,
+            daily BOOLEAN NOT NULL,
+            PRIMARY KEY (email, number)
+    )''')
 
 class Server:
+
     def subscribe(self, email, number, daily):
-        # append to mailing list
-        with open(subs_csv, 'a') as subs:
-            writer = csv.writer(subs)
-            writer.writerow((email, number, int(daily)))
+        # add to mailing list
+        with db.conn:
+            db.cur.execute('INSERT OR REPLACE INTO subscribers VALUES (:email, :number, :daily)', {'email':email, 'number':number, 'daily':daily})
         # confirmation
         mail.confirm(email, number, daily)
         # feedback
         return f'{email} subscribed to {number} ({daily})'
+    
+    def unsubscribe(self):
+        pass
 
 def serve():
     server = xmlrpc.server.SimpleXMLRPCServer(("0.0.0.0", 2413))
@@ -26,7 +30,7 @@ def serve():
     server.serve_forever()
 
 def main():
-    createCsv()
+    initialize()
     serve()
 
 if __name__ == "__main__":

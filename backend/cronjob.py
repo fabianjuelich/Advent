@@ -1,18 +1,15 @@
-import os, csv
-from backend.scraper import scraper
-from backend.mail import mail
+from scraper import scraper
+from mail import mail
+from db import db
 
 # read mailing list
-def read():
-    with open(os.path.join(os.path.dirname(__file__), './data/subscriptions.csv'), 'r') as subs:
-        subscriptions = csv.reader(subs.readlines(), delimiter=',')
-    return subscriptions
+def subscribers():
+    db.cur.execute('SELECT * FROM subscribers')
+    return db.cur.fetchall()
 
 # iterate over subscriptions
-def iterate(subscriptions):
-    # skip header
-    next(subscriptions)
-    for email, number, daily in subscriptions:
+def sendNotifications(subscribers):
+    for email, number, daily in subscribers:
         # get status
         result = scraper.scrape(number)
         if result or not int(daily):
@@ -20,7 +17,7 @@ def iterate(subscriptions):
             mail.notify(email, number, result)
 
 def main():
-    iterate(read())
+    sendNotifications(subscribers())
 
 if __name__ == '__main__':
     main()
