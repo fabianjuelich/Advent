@@ -1,14 +1,12 @@
-FROM	alpine:latest
+FROM debian:bookworm
 
 WORKDIR /app
 
-RUN     apk -U upgrade
-RUN     apk add python3
-RUN     python3 -m ensurepip
+RUN apt update && apt install python3 python3-pip -y
 
-COPY    . .
+COPY . .
 
-RUN     pip3 install -r requirements.txt
+RUN pip3 install -r requirements.txt --break-system-packages
 
 HEALTHCHECK CMD netstat -ltn | grep -c 2413
 #RUN    ToDo: register cronjob

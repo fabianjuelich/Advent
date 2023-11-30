@@ -1,16 +1,37 @@
-import os, smtplib, datetime
+import os, smtplib, datetime, locale, math
+from enum import StrEnum
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.utils import formataddr
 from mail import credentials
 
+#locale.setlocale(locale.LC_ALL, 'de_DE.UTF-8')    # ToDo: locale.Error: unsupported locale setting
+
+class Advent(StrEnum):
+    FIRST = '1. Advent'
+    SECOND = '2. Advent'
+    THIRD = '3. Advent'
+    FOURTH = '4. Advent'
+    CHRISTMAS = 'Heiligabend'
+
+def checkAdvent(date):
+    if int(date.strftime('%d')) == 24 and int(date.strftime('%m')) == 12:
+        return Advent.CHRISTMAS
+    if date.strftime('%a') == 'Sun' and int(date.strftime('%d')) in range(1,25) and int(date.strftime('%m')) == 12:
+        return 'der ' + list(Advent)[math.ceil(int(date.strftime('%d')) / 7) - 1].value
+    return 'der ' + date.strftime('%-d. %B')
+
 # text fields #
-day = datetime.datetime.today().strftime("%d. %B")
+num = '({number})'
+day = checkAdvent(datetime.datetime.today())
+# subscription
+subject_subscribed = num + ' 🔔 Bestätigung von Benachrichtigungsabo für Lions-Club-Adventsgewinnkalender'
+subject_unsubscribed = num + ' 🔕 Abbestellung von Benachrichtigungsabo für Lions-Club-Adventsgewinnkalender'
 # lost
-subject_lose = '📅 Hinter diesem Türchen war leider nichts'
+subject_lose = num + ' 📅 Hinter diesem Türchen war leider nichts'
 quote = 'Wer nicht verlieren kann, verdient auch nicht zu gewinnen.'
 # won
-subject_win = '🎁 Hinter diesem Türchen war ein Gewinn'
+subject_win = num + ' 🎁 Hinter diesem Türchen war ein Gewinn'
 congrats = "Du hast '{win}' gewonnen."
 
 # read content
@@ -50,7 +71,7 @@ class Mail():
 # send confirmation
 def subscribed(email: str, number: int, daily: bool):
     # fill placeholders
-    subject = f"({number}) ✅ Bestätigung von Benachrichtigungsabo für Lions-Club-Adventsgewinnkalender"
+    subject = subject_subscribed.format(number=number)
     fallback = (subscribedPlain.format(number=number, daily='täglich ' if daily else ''))
     confirmation = (subscribedHTML.format(number=number, daily='täglich ' if daily else ''))
     # send
@@ -59,7 +80,7 @@ def subscribed(email: str, number: int, daily: bool):
 
 def unsubscribed(email: str, number: int):
     # fill placeholders
-    subject = f"({number}) ✅ Abbestellung von Benachrichtigungsabo für Lions-Club-Adventsgewinnkalender"
+    subject = subject_unsubscribed.format(number=number)
     fallback = (unsubscribedPlain.format(number=number))
     confirmation = (unsubscribedHTML.format(number=number))
     # send
@@ -69,7 +90,7 @@ def unsubscribed(email: str, number: int):
 # send notification
 def notify(email: str, number: int, win):
     # fill placeholders
-    subject = f"({number}) {subject_win if win else subject_lose}"
+    subject = (subject_win if win else subject_lose).format(number=number)
     fallback = (notificationPlain.format(number=number, day=day, statement=congrats.format(win=win) if win else quote))
     notification = (notificationHTML.format(number=number, day=day, statement=congrats.format(win=win) if win else f'<q>{quote}</q>'))
     # send

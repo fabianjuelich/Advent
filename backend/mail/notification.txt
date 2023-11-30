@@ -1,5 +1,5 @@
 # {number}
 Benachrichtigungsabo für Lions-Club-Adventsgewinnkalender
-Heute ist der {day},
+Heute ist {day},
 {statement}
 Weiterhin viel Glück!
