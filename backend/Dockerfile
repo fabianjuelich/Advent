@@ -2,7 +2,12 @@ FROM debian:bookworm
 
 WORKDIR /app
 
-RUN apt update && apt install python3 python3-pip -y
+ENV TZ="Europe/Berlin"
+
+RUN apt update && \
+    apt install -y python3 python3-pip locales net-tools && \
+    sed -i -e 's/# de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/' /etc/locale.gen && \
+    dpkg-reconfigure --frontend=noninteractive locales
 
 COPY . .
 

@@ -5,7 +5,7 @@ from email.mime.multipart import MIMEMultipart
 from email.utils import formataddr
 from mail import credentials
 
-#locale.setlocale(locale.LC_ALL, 'de_DE.UTF-8')    # ToDo: locale.Error: unsupported locale setting
+locale.setlocale(locale.LC_ALL, 'de_DE.UTF-8')
 
 class Advent(StrEnum):
     FIRST = '1. Advent'
@@ -17,7 +17,7 @@ class Advent(StrEnum):
 def checkAdvent(date):
     if int(date.strftime('%d')) == 24 and int(date.strftime('%m')) == 12:
         return Advent.CHRISTMAS
-    if date.strftime('%a') == 'Sun' and int(date.strftime('%d')) in range(1,25) and int(date.strftime('%m')) == 12:
+    if date.strftime('%a') == 'So' and int(date.strftime('%d')) in range(1,25) and int(date.strftime('%m')) == 12:
         return 'der ' + list(Advent)[math.ceil(int(date.strftime('%d')) / 7) - 1].value
     return 'der ' + date.strftime('%-d. %B')
 
