@@ -49,13 +49,13 @@ try:
                     feedback(f'__:green[Erfolgreich]__ :white_check_mark:\n\n{valid_email} erhält nun Benachrichtigungen für die Gewinnnummer _{valid_number}_ :bell:')
                     reset()
                 else:
-                    feedback(':x: Das hat leider nicht geklappt')
+                    feedback(':exclamation: Das hat leider nicht geklappt')
 
             elif mode == Mode.UNSUB.value:
                 if server.unsubscribe(valid_email, valid_number):
-                    feedback(f'__:green[Erfolgreich]__ :white_check_mark:\n\n{valid_email} erhält nun __keine__ Benachrichtigungen mehr für die Gewinnnummer _{valid_number}_ :bell:')
+                    feedback(f'__:green[Erfolgreich]__ :white_check_mark:\n\n{valid_email} erhält nun __keine__ Benachrichtigungen mehr für die Gewinnnummer _{valid_number}_ :no_bell:')
                     reset()
                 else:
-                    feedback(':x: Das hat leider nicht geklappt')
+                    feedback(':exclamation: Das hat leider nicht geklappt')
 except:
     feedback(':x: Versuche es später erneut')

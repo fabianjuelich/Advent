@@ -17,7 +17,8 @@ class Server:
         try:
             with db.conn:
                 db.cur.execute('INSERT OR REPLACE INTO subscribers VALUES (:email, :number, :daily)', {'email':email, 'number':number, 'daily':daily})
-            success = True
+            db.cur.execute('SELECT changes()')
+            success = bool(db.cur.fetchone()[0])
         except:
             success = False
         if success:
@@ -32,7 +33,8 @@ class Server:
         try:
             with db.conn:
                 db.cur.execute('DELETE FROM subscribers WHERE email = :email AND number = :number', {'email':email, 'number':number})
-            success = True
+            db.cur.execute('SELECT changes()')
+            success = bool(db.cur.fetchone()[0])
         except:
             success = False
         if success:
