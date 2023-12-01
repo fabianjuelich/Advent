@@ -10,9 +10,9 @@ def subscribers():
 # iterate over subscriptions
 def sendNotifications(subscribers):
     for email, number, daily in subscribers:
-        # get status
+        # get winning status
         result = scraper.scrape(number)
-        if result or not int(daily):
+        if result or int(daily):
             # send email
             mail.notify(email, number, result)
 
