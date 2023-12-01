@@ -32,7 +32,7 @@ subject_lose = num + ' 📅 Hinter diesem Türchen war leider nichts'
 quote = 'Wer nicht verlieren kann, verdient auch nicht zu gewinnen.'
 # won
 subject_win = num + ' 🎁 Hinter diesem Türchen war ein Gewinn'
-congrats = "Du hast '{win}' gewonnen."
+congrats = "Du hast {win} gewonnen."
 
 # read content
 with open(os.path.join(os.path.dirname(__file__), './notification.txt'), 'r') as noteP, \
