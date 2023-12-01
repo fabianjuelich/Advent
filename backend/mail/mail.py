@@ -28,7 +28,7 @@ day = checkAdvent(datetime.datetime.today())
 subject_subscribed = num + ' 🔔 Bestätigung von Benachrichtigungsabo für Lions-Club-Adventsgewinnkalender'
 subject_unsubscribed = num + ' 🔕 Abbestellung von Benachrichtigungsabo für Lions-Club-Adventsgewinnkalender'
 # lost
-subject_lose = num + ' 📅 Hinter diesem Türchen war leider nichts'
+subject_lose = num + ' ☃️ Hinter diesem Türchen war leider nichts'
 quote = 'Wer nicht verlieren kann, verdient auch nicht zu gewinnen.'
 # won
 subject_win = num + ' 🎁 Hinter diesem Türchen war ein Gewinn'
