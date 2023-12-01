@@ -8,6 +8,7 @@ services:
     # tty: true # for dev
     volumes:
       - ./backend/data/:/app/data/
+      - ./backend/logs/:/app/logs/
     restart: unless-stopped
 
   frontend:

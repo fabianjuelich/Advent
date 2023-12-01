@@ -1,6 +1,15 @@
-import xmlrpc.server
+import xmlrpc.server, logging, os
 from mail import mail
 from db import db
+
+# log
+logging.basicConfig(filename=os.path.join(os.path.dirname(__file__), './logs/server.log'),
+                    filemode='a',
+                    format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                    datefmt='%H:%M:%S',
+                    level=logging.DEBUG)
+
+logging.info(__file__)
 
 def initialize():
     db.cur.execute('''CREATE TABLE IF NOT EXISTS subscribers (
@@ -19,13 +28,14 @@ class Server:
                 db.cur.execute('INSERT OR REPLACE INTO subscribers VALUES (:email, :number, :daily)', {'email':email, 'number':number, 'daily':daily})
             db.cur.execute('SELECT changes()')
             success = bool(db.cur.fetchone()[0])
-        except:
+        except Exception as e:
             success = False
+            logging.error(e)
         if success:
             try:
                 mail.subscribed(email, number, daily)
             except Exception as e:
-                raise e
+                logging.error(e)
         return success
     
     def unsubscribe(self, email, number):
@@ -35,13 +45,14 @@ class Server:
                 db.cur.execute('DELETE FROM subscribers WHERE email = :email AND number = :number', {'email':email, 'number':number})
             db.cur.execute('SELECT changes()')
             success = bool(db.cur.fetchone()[0])
-        except:
+        except Exception as e:
             success = False
+            logging.error(e)
         if success:
             try:
                 mail.unsubscribed(email, number)
             except Exception as e:
-                raise e
+                logging.error(e)
         return success
 
 def serve():

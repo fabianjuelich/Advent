@@ -2,6 +2,8 @@
 backend/mail/credentials.py
 ## data ##
 backend/data
+## logs ##
+backend/logs
 
 ## cpp ##
 
