@@ -1,12 +1,18 @@
 import streamlit as st
 
-# for safety reasons
+# prevent code leak
 try:
+
     import re, xmlrpc.client
     from enum import StrEnum
-
+    
+    # validation of e-mail address
     EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
 
+    # XML-RPC server connection
+    server = xmlrpc.client.ServerProxy('http://advent-backend:2413')
+
+    # functions
     class Mode(StrEnum):
         SUB = 'Abonnieren'
         UNSUB = 'Deabonnieren'
@@ -25,7 +31,7 @@ try:
         # fields
         email = st.text_input(':email: E-Mail-Adresse `max.mustermann@mail.de`', key='email')
         number = st.number_input(':admission_tickets: Gewinnnummer `1234`', min_value=1, max_value=5000, step=1, value=None, key='number')
-        daily = not st.checkbox(':gift: Benachrichtige mich nur bei einem Gewinn', value=True, help='Falls deaktiviert, erhält man jeden Tag eine Benachrichtigung darüber, ob man gewonnen hat oder nicht.', key='daily')
+        daily = not st.checkbox(':gift: Benachrichtige mich nur bei einem Gewinn', value=True, help='Falls deaktiviert, erhälst du jeden Tag eine Benachrichtigung darüber, ob du gewonnen hast oder nicht.', key='daily')
         mode = st.radio('Modus', [Mode.SUB.value, Mode.UNSUB.value], 0, horizontal=True, label_visibility='collapsed', key='mode')
         # confirmation
         submit = st.form_submit_button('Okay')
@@ -42,8 +48,6 @@ try:
 
         if valid_email and valid_number:
             # send data to server
-            server = xmlrpc.client.ServerProxy('http://advent-backend:2413')
-
             if mode == Mode.SUB.value:
                 if server.subscribe(valid_email, valid_number, daily):
                     feedback(f'__:green[Erfolgreich]__ :white_check_mark:\n\n{valid_email} erhält nun Benachrichtigungen für die Gewinnnummer _{valid_number}_ :bell:')
@@ -57,5 +61,6 @@ try:
                     reset()
                 else:
                     feedback(':exclamation: Das hat leider nicht geklappt')
+
 except:
     feedback(':x: Versuche es später erneut')
