@@ -1,6 +1,7 @@
 import xmlrpc.server, logging, os
 from mail import mail
 from db import db
+from enum import Enum
 
 # log
 logging.basicConfig(filename=os.path.join(os.path.dirname(__file__), './logs/server.log'),
@@ -19,32 +20,54 @@ def initialize():
             PRIMARY KEY (email, number)
     )''')
 
-class Server:
+class Subscription(Enum):
+    CREATED = 0
+    UPTODATE = 1
+    UPDATED = 2
+    ERROR = 3
+    EXCEPTION = 4
 
+class Server:
     def subscribe(self, email, number, daily):
         # add to mailing list
         try:
             with db.conn:
-                db.cur.execute('INSERT OR REPLACE INTO subscribers VALUES (:email, :number, :daily)', {'email':email, 'number':number, 'daily':daily})
-            db.cur.execute('SELECT changes()')
-            success = bool(db.cur.fetchone()[0])
+                # check if the record already exists
+                db.cur.execute('SELECT * FROM subscribers WHERE email = :email AND number = :number', {'email':email, 'number':number})
+                record = db.cur.fetchone()
+                if record:
+                # record exists
+                    if daily == record[2]:
+                    # is the same
+                        result = Subscription.UPTODATE
+                    else:
+                    # needs to be updated
+                        db.cur.execute('UPDATE subscribers SET daily = :daily WHERE email = :email AND number = :number', { 'daily':daily, 'email':email, 'number':number})
+                        if db.changes_made():
+                            result = Subscription.UPDATED
+                            mail.subscribed(email, number, daily, True)
+                        else:
+                            result = Subscription.ERROR
+                else:
+                # record does not exist
+                    db.cur.execute('INSERT OR REPLACE INTO subscribers VALUES (:email, :number, :daily)', {'email':email, 'number':number, 'daily':daily})
+                    if db.changes_made():
+                        result = Subscription.CREATED
+                        mail.subscribed(email, number, daily, False)
+                    else:
+                        result = Subscription.ERROR
+
         except Exception as e:
-            success = False
+            result = Subscription.EXCEPTION
             logging.error(e)
-        if success:
-            try:
-                mail.subscribed(email, number, daily)
-            except Exception as e:
-                logging.error(e)
-        return success
+        return result.value
     
     def unsubscribe(self, email, number):
         # remove from mailing list
         try:
             with db.conn:
                 db.cur.execute('DELETE FROM subscribers WHERE email = :email AND number = :number', {'email':email, 'number':number})
-            db.cur.execute('SELECT changes()')
-            success = bool(db.cur.fetchone()[0])
+            success = db.changes_made()
         except Exception as e:
             success = False
             logging.error(e)

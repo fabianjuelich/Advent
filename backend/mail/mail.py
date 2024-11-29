@@ -5,7 +5,7 @@ from email.mime.multipart import MIMEMultipart
 from email.utils import formataddr
 from mail import credentials
 
-locale.setlocale(locale.LC_ALL, 'de_DE.UTF-8')
+# locale.setlocale(locale.LC_ALL, 'de_DE.UTF-8')
 
 class Advent(StrEnum):
     FIRST = '1. Advent'
@@ -22,10 +22,11 @@ def checkAdvent(date):
     return 'der ' + date.strftime('%-d. %B')
 
 # text fields #
-num = '({number})'
+num = '{number}'
 day = checkAdvent(datetime.datetime.today())
 # subscription
 subject_subscribed = num + ' 🔔 Bestätigung von Benachrichtigungsabo für Lions-Club-Adventsgewinnkalender'
+subject_updated = num + ' 🔔 Aktualisierung von Benachrichtigungsabo für Lions-Club-Adventsgewinnkalender'
 subject_unsubscribed = num + ' 🔕 Abbestellung von Benachrichtigungsabo für Lions-Club-Adventsgewinnkalender'
 # lost
 subject_lose = num + ' ☃️ Hinter diesem Türchen war leider nichts'
@@ -51,7 +52,7 @@ with open(os.path.join(os.path.dirname(__file__), './notification.txt'), 'r') as
 class Mail():
 
     def __init__(self, subject, fromAddr, toAddr, html, plain):
-        self.toAddr = toAddr
+        self.recipients = [toAddr[1], fromAddr[1]]
         # create message
         self.msg = MIMEMultipart('alternative')
         self.msg['From'] = formataddr(fromAddr)
@@ -63,36 +64,36 @@ class Mail():
 
     def send(self):
         # encrypted communication
-        with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
-            smtp.starttls()
-            smtp.login(credentials.email_user, credentials.email_password)
-            smtp.sendmail(credentials.email_user, self.toAddr[1], self.msg.as_string())
+        with smtplib.SMTP_SSL(credentials.smtp_server_name, credentials.smtp_server_port) as smtp:
+            pass
+            smtp.login(credentials.smtp_user_address, credentials.smtp_user_password)
+            smtp.sendmail(credentials.smtp_user_address, self.recipients, self.msg.as_string())
 
 # send confirmation
-def subscribed(email: str, number: int, daily: bool):
+def subscribed(email: str, number: int, daily: bool, update=False):
     # fill placeholders
-    subject = subject_subscribed.format(number=number)
-    fallback = (subscribedPlain.format(number=number, daily='täglich ' if daily else ''))
-    confirmation = (subscribedHTML.format(number=number, daily='täglich ' if daily else ''))
+    subject = subject_updated.format(number=number) if update else subject_subscribed.format(number=number)
+    fallback = subscribedPlain.format(number=number, daily='täglich ' if daily else '')
+    confirmation = subscribedHTML.format(number=number, daily='täglich ' if daily else '')
     # send
-    mail = Mail(subject, (credentials.realname, credentials.email_user), (str(number), email), confirmation, fallback)
+    mail = Mail(subject, (credentials.smtp_user_realname, credentials.smtp_user_address), (num.format(number=number), email), confirmation, fallback)
     mail.send()
 
 def unsubscribed(email: str, number: int):
     # fill placeholders
     subject = subject_unsubscribed.format(number=number)
-    fallback = (unsubscribedPlain.format(number=number))
-    confirmation = (unsubscribedHTML.format(number=number))
+    fallback = unsubscribedPlain.format(number=number)
+    confirmation = unsubscribedHTML.format(number=number)
     # send
-    mail = Mail(subject, (credentials.realname, credentials.email_user), (str(number), email), confirmation, fallback)
+    mail = Mail(subject, (credentials.smtp_user_realname, credentials.smtp_user_address), (num.format(number=number), email), confirmation, fallback)
     mail.send()
 
 # send notification
 def notify(email: str, number: int, win):
     # fill placeholders
-    subject = (subject_win if win else subject_lose).format(number=number)
-    fallback = (notificationPlain.format(number=number, day=day, statement=congrats.format(win=win) if win else quote))
-    notification = (notificationHTML.format(number=number, day=day, statement=congrats.format(win=win) if win else f'<q>{quote}</q>'))
+    subject = subject_win if win else subject_lose.format(number=number)
+    fallback = notificationPlain.format(number=number, day=day, statement=congrats.format(win=win) if win else quote)
+    notification = notificationHTML.format(number=number, day=day, statement=congrats.format(win=win) if win else f'<q>{quote}</q>')
     # send
-    mail = Mail(subject, (credentials.realname, credentials.email_user), (str(number), email), notification, fallback)
+    mail = Mail(subject, (credentials.smtp_user_realname, credentials.smtp_user_address), (num.format(number=number), email), notification, fallback)
     mail.send()

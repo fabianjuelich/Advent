@@ -4,13 +4,21 @@ import streamlit as st
 try:
 
     import re, xmlrpc.client
-    from enum import StrEnum
+    from enum import StrEnum, Enum
     
     # validation of e-mail address
     EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
 
     # XML-RPC server connection
     server = xmlrpc.client.ServerProxy('http://advent-backend:2413')
+
+    # subscription types
+    class Subscription(Enum):
+        CREATED = 0
+        UPTODATE = 1
+        UPDATED = 2
+        ERROR = 3
+        EXCEPTION = 4
 
     # functions
     class Mode(StrEnum):
@@ -49,11 +57,20 @@ try:
         if valid_email and valid_number:
             # send data to server
             if mode == Mode.SUB.value:
-                if server.subscribe(valid_email, valid_number, daily):
-                    feedback(f'__:green[Erfolgreich]__ :white_check_mark:\n\n{valid_email} erhält nun Benachrichtigungen für die Gewinnnummer _{valid_number}_ :bell:')
-                    reset()
-                else:
-                    feedback(':exclamation: Das hat leider nicht geklappt')
+                result = Subscription(server.subscribe(valid_email, valid_number, daily))
+                match(result):
+                    case Subscription.CREATED:
+                        feedback(f'__:green[Abonniert]__ :white_check_mark:\n\n{valid_email} erhält nun Benachrichtigungen für die Gewinnnummer _{valid_number}_ :bell:')
+                        reset()
+                    case Subscription.UPTODATE:
+                        feedback(f'__:yellow[Duplikat]__\n\n{valid_email} Du erhälst bereits Benachrichtigungen')
+                    case Subscription.UPDATED:
+                        feedback(f'__:green[Aktualisiert]__ :white_check_mark:\n\n Die Häufigkeit der Benachrichtigungen wurde aktualisiert :bell:')
+                        reset()
+                    case Subscription.ERROR:
+                        feedback('__:red[Fehler]__ :exclamation:\n\nDas hat leider nicht geklappt')
+                    case Subscription.EXCEPTION:
+                        feedback('__:red[Ausnahme]__ :exclamation:\n\nDas hat leider nicht geklappt')
 
             elif mode == Mode.UNSUB.value:
                 if server.unsubscribe(valid_email, valid_number):
