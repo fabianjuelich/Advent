@@ -9,6 +9,6 @@ COPY . .
 
 RUN pip3 install -r requirements.txt
 
-HEALTHCHECK CMD curl --fail http://localhost:2412/_stcore/health
+HEALTHCHECK CMD curl -k --fail https://localhost:2412/_stcore/health
 
 ENTRYPOINT ["streamlit", "run", "web_service.py", "--server.port=2412", "--server.address=0.0.0.0"]
