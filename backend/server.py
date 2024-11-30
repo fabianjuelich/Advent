@@ -27,6 +27,8 @@ class Subscription(Enum):
     ERROR = 3
     EXCEPTION = 4
 
+USER_LIMIT = 100
+
 class Server:
     def subscribe(self, email, number, daily):
         # add to mailing list
@@ -50,10 +52,16 @@ class Server:
                             result = Subscription.ERROR
                 else:
                 # record does not exist
-                    db.cur.execute('INSERT OR REPLACE INTO subscribers VALUES (:email, :number, :daily)', {'email':email, 'number':number, 'daily':daily})
-                    if db.changes_made():
-                        result = Subscription.CREATED
-                        mail.subscribed(email, number, daily, False)
+                    # check if the subscriber limit has been reached
+                    db.cur.execute("SELECT COUNT(*) FROM subscribers")
+                    row_count = db.cur.fetchone()[0]
+                    if row_count < USER_LIMIT:
+                        db.cur.execute('INSERT OR REPLACE INTO subscribers VALUES (:email, :number, :daily)', {'email':email, 'number':number, 'daily':daily})
+                        if db.changes_made():
+                            result = Subscription.CREATED
+                            mail.subscribed(email, number, daily, False)
+                        else:
+                            result = Subscription.ERROR
                     else:
                         result = Subscription.ERROR
 
