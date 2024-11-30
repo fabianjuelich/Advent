@@ -1,4 +1,4 @@
 # {number}
-Benachrichtigungsabo für Lions-Club-Adventsgewinnkalender
+Oma's Adventskalender
 Du erhälst nun {daily}Benachrichtigungen über etwaige Gewinne.
 Viel Glück!

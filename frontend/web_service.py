@@ -33,7 +33,7 @@ try:
         st.markdown(message)
 
     st.set_page_config(page_icon=':santa:', page_title="Oma's Adventskalender", layout="wide")
-    st.title('Benachrichtigungsabo für Lions-Club-Adventsgewinnkalender :christmas_tree:')
+    st.title("Oma's Adventskalender :christmas_tree:")
 
     with st.form('subscription'):
         # fields
