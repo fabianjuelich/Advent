@@ -26,9 +26,9 @@ num = '{number}'
 day = checkAdvent(datetime.datetime.today())
 # subscription
 omas_advent = "Oma's Adventskalender"
-subject_subscribed = num + ' 🔔 Bestätigung von {omas_advent}'
-subject_updated = num + ' 🔔 Aktualisierung von {omas_advent}'
-subject_unsubscribed = num + ' 🔕 Abbestellung von {omas_advent}'
+subject_subscribed = num + f' 🔔 Bestätigung von {omas_advent}'
+subject_updated = num + f' 🔔 Aktualisierung von {omas_advent}'
+subject_unsubscribed = num + f' 🔕 Abbestellung von {omas_advent}'
 # lost
 subject_lose = num + ' ☃️ Hinter diesem Türchen war leider nichts'
 quote = 'Wer nicht verlieren kann, verdient auch nicht zu gewinnen.'
