@@ -32,7 +32,7 @@ try:
     def feedback(message):
         st.markdown(message)
 
-    st.set_page_config(page_icon=':santa:', page_title="Oma's Adventskalender")
+    st.set_page_config(page_icon=':santa:', page_title="Oma's Adventskalender", layout="wide")
     st.title('Benachrichtigungsabo für Lions-Club-Adventsgewinnkalender :christmas_tree:')
 
     with st.form('subscription'):
@@ -60,24 +60,24 @@ try:
                 result = Subscription(server.subscribe(valid_email, valid_number, daily))
                 match(result):
                     case Subscription.CREATED:
-                        feedback(f'__:green[Abonniert]__ :white_check_mark:\n\n{valid_email} erhält nun Benachrichtigungen für die Gewinnnummer _{valid_number}_ :bell:')
+                        feedback(f'__:green[Abonniert]__\n\nDu erhälst nun für diese Gewinnnummer Benachrichtigungen')
                         reset()
                     case Subscription.UPTODATE:
-                        feedback(f'__:yellow[Duplikat]__\n\n{valid_email} Du erhälst bereits Benachrichtigungen')
+                        feedback(f'__:orange[Duplikat]__\n\nDu erhälst für diese Gewinnnummer bereits Benachrichtigungen')
                     case Subscription.UPDATED:
-                        feedback(f'__:green[Aktualisiert]__ :white_check_mark:\n\n Die Häufigkeit der Benachrichtigungen wurde aktualisiert :bell:')
+                        feedback(f'__:green[Aktualisiert]__\n\nDie Häufigkeit der Benachrichtigungen für diese Gewinnnummer wurde aktualisiert')
                         reset()
                     case Subscription.ERROR:
-                        feedback('__:red[Fehler]__ :exclamation:\n\nDas hat leider nicht geklappt')
+                        feedback('__:red[Fehler]__\n\nDas hat leider nicht geklappt')
                     case Subscription.EXCEPTION:
-                        feedback('__:red[Ausnahme]__ :exclamation:\n\nDas hat leider nicht geklappt')
+                        feedback('__:red[Ausnahme]__\n\nDas hat leider nicht geklappt')
 
             elif mode == Mode.UNSUB.value:
                 if server.unsubscribe(valid_email, valid_number):
-                    feedback(f'__:green[Erfolgreich]__ :white_check_mark:\n\n{valid_email} erhält nun __keine__ Benachrichtigungen mehr für die Gewinnnummer _{valid_number}_ :no_bell:')
+                    feedback(f'__:green[Deabonniert]__\n\nDu erhälst für diese Gewinnnummer nun __keine__ Benachrichtigungen mehr')
                     reset()
                 else:
-                    feedback(':exclamation: Das hat leider nicht geklappt')
+                    feedback('__:red[Ausnahme]__\n\nDas hat leider nicht geklappt')
 
 except:
     feedback(':x: Versuche es später erneut')
