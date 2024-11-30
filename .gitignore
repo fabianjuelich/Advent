@@ -4,6 +4,9 @@ backend/mail/credentials.py
 backend/data
 ## logs ##
 backend/logs
+## certs ##
+frontend/.streamlit/*.pem
+frontend/.streamlit/*.key
 
 ## cpp ##
 

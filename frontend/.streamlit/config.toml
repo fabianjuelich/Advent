@@ -1,2 +1,6 @@
 [browser]
 gatherUsageStats = false
+
+[server]
+sslCertFile = '/app/.streamlit/certchain.pem'
+sslKeyFile = '/app/.streamlit/private.key'
