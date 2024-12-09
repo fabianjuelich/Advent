@@ -5,7 +5,7 @@ from email.mime.multipart import MIMEMultipart
 from email.utils import formataddr
 from mail import credentials
 
-# locale.setlocale(locale.LC_ALL, 'de_DE.UTF-8')
+locale.setlocale(locale.LC_ALL, 'de_DE.UTF-8')
 
 class Advent(StrEnum):
     FIRST = '1. Advent'

@@ -3,9 +3,9 @@ import streamlit as st
 # prevent code leak
 try:
 
-    import re, xmlrpc.client
+    import re, xmlrpc.client, datetime
     from enum import StrEnum, Enum
-    
+
     # validation of e-mail address
     EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
 
@@ -33,7 +33,7 @@ try:
         st.markdown(message)
 
     st.set_page_config(page_icon=':santa:', page_title="Oma's Adventskalender", layout="wide")
-    st.header("Oma's Adventskalender :christmas_tree:")
+    st.header(f"Oma's Adventskalender {datetime.date.today().year} :christmas_tree:")
 
     with st.form('subscription'):
         # fields
